@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suffix Word Exam</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: none;
+        }
+        .question-container {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+        }
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+        .next-button, .prev-button, .submit-button, .ok-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .next-button:hover, .prev-button:hover, .submit-button:hover, .ok-button:hover {
+            background-color: #218838;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .result-section {
+            display: none;
+        }
+        .score {
+            font-size: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div id="user-details-section" class="container">
+        <h1>Enter Your Details</h1>
+        <div class="question-container">
+            <div class="question">Name:</div>
+            <input type="text" id="userName" placeholder="Enter your name" required>
+            <div class="question">Email ID:</div>
+            <input type="email" id="userEmail" placeholder="Enter your email ID" required>
+            <button type="button" class="ok-button" onclick="startExam()">OK</button>
+        </div>
+    </div>
+
+
+    <div id="question-section" class="container">
+<h1>Find the correct Suffix word for the given qestions</h1>
+<h4>AI based words</h4>
+        <div id="question-container" class="question-container">
+		
+        </div>
+    </div>
+
+
+    <div id="result-section" class="result-section">
+        <h2>Result Analysis</h2>
+        <canvas id="resultChart"></canvas>
+        <div id="score" class="score"></div>
+    </div>
+
+
+    <script>
+        const questions = [
+            {
+                id: 'question1',
+                text: '1. Choose the correct suffix for the word "<strong>Algorith</strong>":',
+                options: ['-ms', '-ming', '-med', '-ation'],
+                correctAnswer: '-ms'
+            },
+            {
+                id: 'question2',
+                text: '2. Choose the correct suffix for the word "<strong>Neural Network</strong>":',
+                options: ['-s', '-ed', '-ing', '-ly'],
+                correctAnswer: '-s'
+            },
+            {
+                id: 'question3',
+                text: '3. Choose the correct suffix for the word "<strong>Optimizat</strong>":',
+                options: ['-ing', '-ion', '-ed', '-ly'],
+                correctAnswer: '-ion'
+            },
+            {
+                id: 'question4',
+                text: '4. Choose the correct suffix for the word "<strong>Classifier</strong>":',
+                options: ['-s', '-ed', '-ing', '-ly'],
+                correctAnswer: '-s'
+            },
+	    {
+                id: 'question5',
+                text: '5. Choose the correct suffix for the word "<strong>Overfitt</strong>":',
+                options: ['-ing', '-ed', '-ness', '-ly'],
+                correctAnswer: '-ing'
+            },
+		{
+                id: 'question6',
+                text: '6. Choose the correct suffix for the word "<strong>Generalizat</strong>":',
+                options: ['-ed', '-ions', '-ing', '-ion'],
+                correctAnswer: '-ion'
+            },
+		{
+                id: 'question7',
+                text: '7. Choose the correct suffix for the word "<strong>Cluster</strong>":',
+                options: ['-s', '-ed', '-ing', '-ly'],
+                correctAnswer: '-ing'
+            },
+{
+                id: 'question8',
+                text: '8. Choose the correct suffix for the word "<strong>feature Extract</strong>":',
+                options: ['-ion', '-ed', '-ing', '-ly'],
+                correctAnswer: '-ion'
+            },
+{
+                id: 'question9',
+                text: '9. Choose the correct suffix for the word "<strong>Inference Eng</strong>":',
+                options: ['-ines', '-ine', '-ined', '-ins'],
+                correctAnswer: '-ine'
+            },
+{
+                id: 'question10',
+                text: '10. Choose the correct suffix for the word "<strong>Dimensionali</strong>":',
+                options: ['-ties', '-ting', '-ty', '-tie'],
+                correctAnswer: '-ty'
+            },
+{
+                id: 'question11',
+                text: '11. Choose the correct suffix for the word "<strong>Normaliz</strong>":',
+                options: ['-ed', '-ations', '-ation', '-ated'],
+                correctAnswer: '-ation'
+            },
+{
+                id: 'question12',
+                text: '12. Choose the correct suffix for the word "<strong>Discretiz</strong>":',
+                options: ['-ation', '-ed', '-ations', '-ated'],
+                correctAnswer: '-ation'
+            },
+{
+                id: 'question13',
+                text: '13. Choose the correct suffix for the word "<strong>Hyperparameter</strong>":',
+                options: ['-s', '-ed', '-ing', '-ly'],
+                correctAnswer: '-s'
+            },
+{
+                id: 'question14',
+                text: '14. Choose the correct suffix for the word "<strong>Cross validat</strong>":',
+                options: ['-ion', '-ed', '-ing', '-ly'],
+                correctAnswer: '-ion'
+            },
+{
+                id: 'question15',
+                text: '15. Choose the correct suffix for the word "<strong>Sampl</strong>":',
+                options: ['-ings', '-ed', '-ing', '-y'],
+                correctAnswer: '-ing'
+            },
+{
+                id: 'question16',
+                text: '16. Choose the correct suffix for the word "<strong>Dimensionality Reduct</strong>":',
+                options: ['-ion', '-ioned', '-ing', '-ly'],
+                correctAnswer: '-ion'
+            },
+{
+                id: 'question17',
+                text: '17. Choose the correct suffix for the word "<strong>Meta learn</strong>":',
+                options: ['-ers', '-ed', '-ing', '-ly'],
+                correctAnswer: '-ing'
+            },
+{
+                id: 'question18',
+                text: '18. Choose the correct suffix for the word "<strong>Adaptat</strong>":',
+                options: ['-ion', '-ioned', '-ing', '-ly'],
+                correctAnswer: '-ion'
+            },
+{
+                id: 'question19',
+                text: '19. Choose the correct suffix for the word "<strong>Inferenc</strong>":',
+                options: ['-es', '-ed', '-ing', '-ly'],
+                correctAnswer: '-es'
+            },
+
+
+            {
+                id: 'question20',
+                text: '20. Choose the correct suffix for the word "<strong>Regression</strong>":',
+                options: ['-s', '-ed', '-ing', '-ly'],
+                correctAnswer: '-s'
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function startExam() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            if (name && email) {
+                document.getElementById('user-details-section').style.display = 'none';
+                document.getElementById('question-section').style.display = 'block';
+                loadQuestion();
+            } else {
+                alert('Please enter both name and email ID.');
+            }
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            const container = document.getElementById('question-container');
+
+            container.innerHTML = `
+                <div class="question">${question.text}</div>
+                <div class="options">
+                    ${question.options.map(option => `
+                        <label class="option-label">
+                            <input type="radio" name="${question.id}" value="${option}" onclick="saveAnswer('${question.id}', '${option}')"> ${option}
+                        </label>
+                    `).join('')}
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="prev-button" onclick="prevQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>Prev</button>
+                    ${currentQuestionIndex < questions.length - 1 ? 
+                        `<button type="button" class="next-button" onclick="nextQuestion()">Next</button>` :
+                        `<button type="button" class="submit-button" onclick="submitExam()">Submit</button>`}
+                </div>
+            `;
+
+
+            const savedAnswer = localStorage.getItem(question.id);
+            if (savedAnswer) {
+                const radioButtons = document.getElementsByName(question.id);
+                radioButtons.forEach(radio => {
+                    if (radio.value === savedAnswer) {
+                        radio.checked = true;
+                    }
+                });
+            }
+        }
+
+        function saveAnswer(questionId, answer) {
+            localStorage.setItem(questionId, answer);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function submitExam() {
+            const questionSection = document.getElementById('question-section');
+            const resultSection = document.getElementById('result-section');
+            questionSection.style.display = "none";
+            resultSection.style.display = "block";
+
+            let correctCount = 0;
+            let incorrectCount = 0;
+
+            questions.forEach(question => {
+                const userAnswer = localStorage.getItem(question.id);
+                if (userAnswer === question.correctAnswer) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+            });
+
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            const resultChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Correct', 'Incorrect'],
+                    datasets: [{
+                        label: 'Number of Answers',
+                        data: [correctCount, incorrectCount],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(255, 99, 132, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            const totalQuestions = questions.length;
+            const score = `You got ${correctCount} out of ${totalQuestions} questions.`;
+            document.getElementById('score').textContent = score;
+
+            // Clear localStorage after submission
+            localStorage.clear();
+        }
+
+        window.onload = function() {
+            // Clear localStorage when the page is refreshed
+            localStorage.clear();
+            document.getElementById('user-details-section').style.display = 'block';
+            document.getElementById('question-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
